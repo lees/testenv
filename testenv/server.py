@@ -19,6 +19,7 @@ class Server(object):
     environ = None
     address = None
     after = None
+    popen_params = {}
 
     def __init__(self, runner, name, cfg):
         self.runner = runner
@@ -53,7 +54,16 @@ class Server(object):
             self.stdout = open(self.basepath(self.stdout), 'w')
         if self.stderr is not None:
             self.stderr = open(self.basepath(self.stderr), 'w')
-        p = subprocess.Popen(self.command, stdout=self.stdout, stderr=self.stderr, env=self.environ, cwd=self.basedir)
+        args = [self.command]
+        print self.environ
+        kwargs = {
+            'stdout': self.stdout,
+            'stderr': self.stderr,
+            'env': self.environ,
+            'cwd': self.basedir
+        }
+        kwargs.update(self.popen_params)
+        p = subprocess.Popen(*args, **kwargs)
         if self.pidfile is not None:
             self.pid = utils.wait_for_pid(self.pidfile, maxtime=self.start_timeout)
             if self.pid is None:

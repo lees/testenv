@@ -29,13 +29,14 @@ class Uwsgi(server.Server):
             kwargs['config'],
         )
 
+        self.popen_params = {'shell': True}
+        self.command = self.binary+" --plugin python --ini "+self.configfile
+        self.command += " --pidfile " + self.pidfile
+
     def prepare(self):
         os.makedirs(self.basedir)
         utils.write_ini(self.configfile, { 'uwsgi': self.config })
 
     def start(self):
         super(Uwsgi, self).start()
-        pass
-
-    def stop(self):
-        pass
+        
