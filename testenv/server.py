@@ -54,8 +54,6 @@ class Server(object):
             self.stdout = open(self.basepath(self.stdout), 'w')
         if self.stderr is not None:
             self.stderr = open(self.basepath(self.stderr), 'w')
-        args = [self.command]
-        print self.environ
         kwargs = {
             'stdout': self.stdout,
             'stderr': self.stderr,
@@ -63,7 +61,7 @@ class Server(object):
             'cwd': self.basedir
         }
         kwargs.update(self.popen_params)
-        p = subprocess.Popen(*args, **kwargs)
+        p = subprocess.Popen(self.command, **kwargs)
         if self.pidfile is not None:
             self.pid = utils.wait_for_pid(self.pidfile, maxtime=self.start_timeout)
             if self.pid is None:
